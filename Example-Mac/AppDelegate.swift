@@ -15,13 +15,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: NSWindow!
     @IBOutlet var textView: NSTextView!
 
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        let path = NSBundle.mainBundle().pathForResource("test", ofType: "md")!
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let path = Bundle.main.path(forResource: "test", ofType: "md")!
         let document = CMDocument(contentsOfFile: path, options: CMDocumentOptions(rawValue: 0))
-        let renderer = CMAttributedStringRenderer(document: document, attributes: CMTextAttributes())
-        renderer.registerHTMLElementTransformer(CMHTMLStrikethroughTransformer())
-        renderer.registerHTMLElementTransformer(CMHTMLSuperscriptTransformer())
-        renderer.registerHTMLElementTransformer(CMHTMLUnderlineTransformer())
-        textView.textStorage?.appendAttributedString(renderer.render())
+        let attributes = CMTextAttributes()
+        //attributes?.textAttributes = [
+            //NSForegroundColorAttributeName : NSColor.blue
+        //]
+        let renderer = CMAttributedStringRenderer(document: document, attributes: attributes)
+        renderer?.register(CMHTMLStrikethroughTransformer())
+        renderer?.register(CMHTMLSuperscriptTransformer())
+        renderer?.register(CMHTMLUnderlineTransformer())
+        
+        let attrString = (renderer?.render())!
+        
+        textView.textStorage?.append(attrString)
     }
 }
